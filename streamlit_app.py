@@ -5,9 +5,7 @@ import plotly.express as px
 st.set_page_config(page_title="iFood Dashboard", layout="wide")
 st.title("📦 iFood Dashboard Generator")
 
-st.markdown("""
-Faça o upload do seu arquivo `pedidos.csv` exportado do iFood para visualizar suas estatísticas de consumo.
-""")
+st.markdown("Envie seu arquivo `pedidos.csv` exportado do iFood para visualizar seus dados de consumo:")
 
 #upload do arquivo CSV
 uploaded_file = st.file_uploader("📁 Envie seu arquivo .csv", type=["csv"])
@@ -15,10 +13,10 @@ uploaded_file = st.file_uploader("📁 Envie seu arquivo .csv", type=["csv"])
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
-    #remove status irrelevantes
+    #remover pedidos rejeitados ou cancelados
     df = df[~df["status"].isin(["DECLINED", "CANCELLED"])]
 
-    #conversão de datas e colunas auxiliares
+    #conversões e colunas auxiliares
     df["data_pedido"] = pd.to_datetime(df["data_pedido"])
     df["ano"] = df["data_pedido"].dt.year
     df["ano_mes"] = df["data_pedido"].dt.to_period("M").astype(str)
@@ -28,24 +26,32 @@ if uploaded_file is not None:
     anos_selecionados = st.multiselect("📅 Selecione o(s) ano(s):", anos_disponiveis, default=anos_disponiveis)
     df_filtrado = df[df["ano"].isin(anos_selecionados)]
 
-    #métricas principais
+    #métricas
     col1, col2, col3 = st.columns(3)
-    col1.metric("💸 Total gasto", f"R$ {df_filtrado['valor'].sum():.2f}")
+    col1.metric("💸 Total gasto", f"R$ {df_filtrado['valor'].sum():,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
     col2.metric("📦 Número de pedidos", len(df_filtrado))
-    col3.metric("🧾 Ticket médio", f"R$ {df_filtrado['valor'].mean():.2f}")
+    col3.metric("🧾 Ticket médio", f"R$ {df_filtrado['valor'].mean():,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
 
     st.markdown("---")
 
     #top restaurantes por gasto
     top_restaurantes = df_filtrado.groupby("restaurante")["valor"].sum().sort_values(ascending=False).head(10)
-    fig1 = px.bar(top_restaurantes, x=top_restaurantes.values, y=top_restaurantes.index,
-                  orientation='h', labels={'x': 'Valor Total (R$)', 'y': 'Restaurante'},
-                  title="🍽️ Top 10 Restaurantes por Gasto")
+    fig1 = px.bar(
+        top_restaurantes,
+        x=top_restaurantes.values,
+        y=top_restaurantes.index,
+        orientation='h',
+        labels={'x': 'Valor Total (R$)', 'y': 'Restaurante'},
+        title="🍽️ Top 10 Restaurantes por Gasto",
+        text=top_restaurantes.apply(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+    )
+    fig1.update_traces(textposition='outside', hovertemplate="R$ %{x:,.2f} em %{y}<extra></extra>")
     st.plotly_chart(fig1, use_container_width=True)
 
     #gastos por mês
     gastos_mes = df_filtrado.groupby("ano_mes")["valor"].sum().reset_index()
     fig2 = px.line(gastos_mes, x="ano_mes", y="valor", markers=True, title="📆 Gastos por Mês")
+    fig2.update_traces(hovertemplate="R$ %{y:,.2f} em %{x}<extra></extra>")
     st.plotly_chart(fig2, use_container_width=True)
 
     #gastos por dia da semana
@@ -58,38 +64,34 @@ if uploaded_file is not None:
         "Friday": "sexta-feira",
         "Saturday": "sábado"
     }
-
     df_filtrado["dia_semana"] = df_filtrado["data_pedido"].dt.day_name().map(dia_map)
     ordem_dias = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"]
     gastos_dia_semana = df_filtrado.groupby("dia_semana")["valor"].sum().reindex(ordem_dias)
 
-    fig3 = px.bar(gastos_dia_semana, x=gastos_dia_semana.index, y=gastos_dia_semana.values,
-                  labels={'x': 'Dia da Semana', 'y': 'Gasto Total (R$)'},
-                  title="📅 Gastos por Dia da Semana")
+    fig3 = px.bar(
+        gastos_dia_semana,
+        x=gastos_dia_semana.index,
+        y=gastos_dia_semana.values,
+        labels={'x': 'Dia da Semana', 'y': 'Gasto Total (R$)'},
+        title="📅 Gastos por Dia da Semana"
+    )
+    fig3.update_traces(hovertemplate="R$ %{y:,.2f} no(a) %{x}<extra></extra>")
     st.plotly_chart(fig3, use_container_width=True)
 
-    #formatação de data para padrão brasileiro
+    #tabela limpa
     df_filtrado["data_formatada"] = df_filtrado["data_pedido"].dt.strftime("%d/%m/%Y")
-
-    #ordenar pela data antes de remover a coluna original
     df_ordenado = df_filtrado.sort_values("data_pedido", ascending=False).reset_index(drop=True)
-
-    #colunas a exibir
     colunas_para_exibir = ["restaurante", "valor", "data_formatada", "dia_semana"]
-    df_tabela = df_ordenado[colunas_para_exibir]
-
-    #renomear colunas para exibição
-    df_tabela = df_tabela.rename(columns={
+    df_tabela = df_ordenado[colunas_para_exibir].rename(columns={
         "restaurante": "🍴 Restaurante",
         "valor": "💰 Valor (R$)",
         "data_formatada": "📅 Data do Pedido",
         "dia_semana": "🗓️ Dia da Semana"
     })
 
-    #exibir a tabela formatada
     st.markdown("### 📋 Tabela de Pedidos")
     st.dataframe(df_tabela.style.format({"💰 Valor (R$)": "R${:,.2f}"}), use_container_width=True)
 
-
 else:
     st.warning("Por favor, envie seu arquivo CSV exportado do iFood para visualizar o dashboard.")
+
