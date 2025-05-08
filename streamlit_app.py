@@ -19,6 +19,7 @@ if uploaded_file is not None:
     df["data_pedido"] = pd.to_datetime(df["data_pedido"])
     df["ano"] = df["data_pedido"].dt.year
     df["ano_mes"] = df["data_pedido"].dt.to_period("M").astype(str)
+    df["mes_extenso"] = df["data_pedido"].dt.strftime("%m/%Y")
 
     # Filtro por ano
     anos_disponiveis = sorted(df["ano"].unique(), reverse=True)
@@ -43,7 +44,7 @@ if uploaded_file is not None:
         x="valor",
         y="restaurante",
         orientation='h',
-        labels={"valor": "Valor Total (R$)", "restaurante": "Restaurante"},
+        labels={"valor": "Gasto Total (R$)", "restaurante": "Restaurante"},
         title="🍽️ Top 10 Restaurantes por Gasto"
     )
     fig1.update_traces(
@@ -54,17 +55,17 @@ if uploaded_file is not None:
     st.plotly_chart(fig1, use_container_width=True)
 
     # Gastos por Mês
-    gastos_mes = df_filtrado.groupby("ano_mes")["valor"].sum().reset_index()
+    gastos_mes = df_filtrado.groupby("mes_extenso")["valor"].sum().reset_index()
     fig2 = px.line(
         gastos_mes,
-        x="ano_mes",
+        x="mes_extenso",
         y="valor",
         markers=True,
-        title="📆 Gastos por Mês"
+        title="📆 Gastos por Mês",
+        labels={"mes_extenso": "Mês", "valor": "Gasto Total (R$)"}
     )
     fig2.update_traces(
-        hovertemplate="%{customdata} em %{x}<extra></extra>",
-        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in gastos_mes["valor"]],
+        hovertemplate="R$ %{y:,.2f} em %{x}<extra></extra>",
         line_color="#f63366",
         marker=dict(color="#f63366")
     )
@@ -97,8 +98,7 @@ if uploaded_file is not None:
         title="📅 Gastos por Dia da Semana"
     )
     fig3.update_traces(
-        hovertemplate="%{customdata} no(a) %{x}<extra></extra>",
-        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in df_dia_semana["valor"]],
+        hovertemplate="R$ %{y:,.2f} no(a) %{x}<extra></extra>",
         marker_color="#f63366"
     )
     st.plotly_chart(fig3, use_container_width=True)
@@ -119,6 +119,7 @@ if uploaded_file is not None:
 
 else:
     st.warning("Por favor, envie seu arquivo CSV exportado do iFood para visualizar o dashboard.")
+
 
 
 
