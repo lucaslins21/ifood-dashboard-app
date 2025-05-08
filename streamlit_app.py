@@ -45,11 +45,11 @@ if uploaded_file is not None:
         orientation='h',
         labels={"valor": "Valor Total (R$)", "restaurante": "Restaurante"},
         title="🍽️ Top 10 Restaurantes por Gasto"
-        color_discrete_sequence=["#f63366"]
     )
     fig1.update_traces(
         hovertemplate="%{customdata} em %{y}<extra></extra>",
-        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in df_restaurantes["valor"]]
+        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in df_restaurantes["valor"]],
+        marker_color="#f63366"
     )
     st.plotly_chart(fig1, use_container_width=True)
 
@@ -61,11 +61,12 @@ if uploaded_file is not None:
         y="valor",
         markers=True,
         title="📆 Gastos por Mês"
-        color_discrete_sequence=["#f63366"]
     )
     fig2.update_traces(
         hovertemplate="%{customdata} em %{x}<extra></extra>",
-        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in gastos_mes["valor"]]
+        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in gastos_mes["valor"]],
+        line_color="#f63366",
+        marker=dict(color="#f63366")
     )
     st.plotly_chart(fig2, use_container_width=True)
 
@@ -94,11 +95,11 @@ if uploaded_file is not None:
         y="valor",
         labels={"dia_semana": "Dia da Semana", "valor": "Gasto Total (R$)"},
         title="📅 Gastos por Dia da Semana"
-        color_discrete_sequence=["#f63366"]
     )
     fig3.update_traces(
         hovertemplate="%{customdata} no(a) %{x}<extra></extra>",
-        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in df_dia_semana["valor"]]
+        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in df_dia_semana["valor"]],
+        marker_color="#f63366"
     )
     st.plotly_chart(fig3, use_container_width=True)
 
@@ -118,6 +119,7 @@ if uploaded_file is not None:
 
 else:
     st.warning("Por favor, envie seu arquivo CSV exportado do iFood para visualizar o dashboard.")
+
 
 
 
