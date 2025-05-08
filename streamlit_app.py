@@ -24,7 +24,9 @@ if uploaded_file is not None:
     df["data_pedido"] = pd.to_datetime(df["data_pedido"])
     df["ano"] = df["data_pedido"].dt.year
     df["ano_mes"] = df["data_pedido"].dt.to_period("M").astype(str)
-    df["dia_semana"] = df["data_pedido"].dt.day_name(locale="pt_BR")
+    dias = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"]
+    df["dia_semana"] = df["data_pedido"].dt.dayofweek.apply(lambda x: dias[x])
+
 
     df = df[df["status"] == "CONCLUDED"]
     df = df.drop(columns=["id_usuario", "data_registro", "status", "id_pedido"])
