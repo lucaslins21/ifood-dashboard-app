@@ -71,9 +71,12 @@ if uploaded_file is not None:
     #formatação de data para padrão brasileiro
     df_filtrado["data_formatada"] = df_filtrado["data_pedido"].dt.strftime("%d/%m/%Y")
 
+    #ordenar pela data antes de remover a coluna original
+    df_ordenado = df_filtrado.sort_values("data_pedido", ascending=False).reset_index(drop=True)
+
     #colunas a exibir
     colunas_para_exibir = ["restaurante", "valor", "data_formatada", "dia_semana"]
-    df_tabela = df_filtrado[colunas_para_exibir].sort_values("data_pedido", ascending=False).reset_index(drop=True)
+    df_tabela = df_ordenado[colunas_para_exibir]
 
     #renomear colunas para exibição
     df_tabela = df_tabela.rename(columns={
