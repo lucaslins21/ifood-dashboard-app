@@ -7,16 +7,15 @@ st.title("📦 iFood Dashboard Generator")
 
 st.markdown("Envie seu arquivo `pedidos.csv` exportado do iFood para visualizar seus dados de consumo:")
 
-# Upload do CSV
 uploaded_file = st.file_uploader("📁 Envie seu arquivo .csv", type=["csv"])
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
-    # Remover pedidos cancelados ou recusados
+    # Remove pedidos recusados ou cancelados
     df = df[~df["status"].isin(["DECLINED", "CANCELLED"])]
 
-    # Conversão de datas
+    # Processa datas
     df["data_pedido"] = pd.to_datetime(df["data_pedido"])
     df["ano"] = df["data_pedido"].dt.year
     df["ano_mes"] = df["data_pedido"].dt.to_period("M").astype(str)
@@ -34,7 +33,7 @@ if uploaded_file is not None:
 
     st.markdown("---")
 
-    # Gráfico: Top Restaurantes
+    # Top Restaurantes
     top_restaurantes = df_filtrado.groupby("restaurante")["valor"].sum().sort_values(ascending=False).head(10)
     df_restaurantes = top_restaurantes.reset_index()
     df_restaurantes.columns = ["restaurante", "valor"]
@@ -47,10 +46,13 @@ if uploaded_file is not None:
         labels={"valor": "Valor Total (R$)", "restaurante": "Restaurante"},
         title="🍽️ Top 10 Restaurantes por Gasto"
     )
-    fig1.update_traces(hovertemplate="R$ %{x:,.2f} em %{y}<extra></extra>")
+    fig1.update_traces(
+        hovertemplate="%{customdata} em %{y}<extra></extra>",
+        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in df_restaurantes["valor"]]
+    )
     st.plotly_chart(fig1, use_container_width=True)
 
-    # Gráfico: Gastos por Mês
+    # Gastos por Mês
     gastos_mes = df_filtrado.groupby("ano_mes")["valor"].sum().reset_index()
     fig2 = px.line(
         gastos_mes,
@@ -59,10 +61,13 @@ if uploaded_file is not None:
         markers=True,
         title="📆 Gastos por Mês"
     )
-    fig2.update_traces(hovertemplate="R$ %{y:,.2f} em %{x}<extra></extra>")
+    fig2.update_traces(
+        hovertemplate="%{customdata} em %{x}<extra></extra>",
+        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in gastos_mes["valor"]]
+    )
     st.plotly_chart(fig2, use_container_width=True)
 
-    # Gráfico: Gastos por Dia da Semana
+    # Gastos por Dia da Semana
     dia_map = {
         "Sunday": "domingo",
         "Monday": "segunda-feira",
@@ -88,10 +93,13 @@ if uploaded_file is not None:
         labels={"dia_semana": "Dia da Semana", "valor": "Gasto Total (R$)"},
         title="📅 Gastos por Dia da Semana"
     )
-    fig3.update_traces(hovertemplate="R$ %{y:,.2f} no(a) %{x}<extra></extra>")
+    fig3.update_traces(
+        hovertemplate="%{customdata} no(a) %{x}<extra></extra>",
+        customdata=[f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for v in df_dia_semana["valor"]]
+    )
     st.plotly_chart(fig3, use_container_width=True)
 
-    # Tabela de Pedidos
+    # Tabela formatada
     df_filtrado["data_formatada"] = df_filtrado["data_pedido"].dt.strftime("%d/%m/%Y")
     df_ordenado = df_filtrado.sort_values("data_pedido", ascending=False).reset_index(drop=True)
     colunas_para_exibir = ["restaurante", "valor", "data_formatada", "dia_semana"]
@@ -107,5 +115,6 @@ if uploaded_file is not None:
 
 else:
     st.warning("Por favor, envie seu arquivo CSV exportado do iFood para visualizar o dashboard.")
+
 
 
