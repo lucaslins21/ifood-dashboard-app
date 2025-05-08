@@ -7,26 +7,26 @@ st.title("📦 iFood Dashboard Generator")
 
 st.markdown("Envie seu arquivo `pedidos.csv` exportado do iFood para visualizar seus dados de consumo:")
 
-#upload do arquivo CSV
+# Upload do CSV
 uploaded_file = st.file_uploader("📁 Envie seu arquivo .csv", type=["csv"])
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
-    #remover pedidos rejeitados ou cancelados
+    # Remover pedidos cancelados ou recusados
     df = df[~df["status"].isin(["DECLINED", "CANCELLED"])]
 
-    #conversões e colunas auxiliares
+    # Conversão de datas
     df["data_pedido"] = pd.to_datetime(df["data_pedido"])
     df["ano"] = df["data_pedido"].dt.year
     df["ano_mes"] = df["data_pedido"].dt.to_period("M").astype(str)
 
-    #filtro por ano (multiselect)
+    # Filtro por ano
     anos_disponiveis = sorted(df["ano"].unique(), reverse=True)
     anos_selecionados = st.multiselect("📅 Selecione o(s) ano(s):", anos_disponiveis, default=anos_disponiveis)
     df_filtrado = df[df["ano"].isin(anos_selecionados)]
 
-    #métricas
+    # Métricas principais
     col1, col2, col3 = st.columns(3)
     col1.metric("💸 Total gasto", f"R$ {df_filtrado['valor'].sum():,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
     col2.metric("📦 Número de pedidos", len(df_filtrado))
@@ -34,27 +34,35 @@ if uploaded_file is not None:
 
     st.markdown("---")
 
-    #top restaurantes por gasto
+    # Gráfico: Top Restaurantes
     top_restaurantes = df_filtrado.groupby("restaurante")["valor"].sum().sort_values(ascending=False).head(10)
+    df_restaurantes = top_restaurantes.reset_index()
+    df_restaurantes.columns = ["restaurante", "valor"]
+
     fig1 = px.bar(
-        top_restaurantes,
-        x=top_restaurantes.values,
-        y=top_restaurantes.index,
+        df_restaurantes,
+        x="valor",
+        y="restaurante",
         orientation='h',
-        labels={'x': 'Valor Total (R$)', 'y': 'Restaurante'},
-        title="🍽️ Top 10 Restaurantes por Gasto",
-        text=top_restaurantes.apply(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+        labels={"valor": "Valor Total (R$)", "restaurante": "Restaurante"},
+        title="🍽️ Top 10 Restaurantes por Gasto"
     )
-    fig1.update_traces(textposition='outside', hovertemplate="R$ %{x:,.2f} em %{y}<extra></extra>")
+    fig1.update_traces(hovertemplate="R$ %{x:,.2f} em %{y}<extra></extra>")
     st.plotly_chart(fig1, use_container_width=True)
 
-    #gastos por mês
+    # Gráfico: Gastos por Mês
     gastos_mes = df_filtrado.groupby("ano_mes")["valor"].sum().reset_index()
-    fig2 = px.line(gastos_mes, x="ano_mes", y="valor", markers=True, title="📆 Gastos por Mês")
+    fig2 = px.line(
+        gastos_mes,
+        x="ano_mes",
+        y="valor",
+        markers=True,
+        title="📆 Gastos por Mês"
+    )
     fig2.update_traces(hovertemplate="R$ %{y:,.2f} em %{x}<extra></extra>")
     st.plotly_chart(fig2, use_container_width=True)
 
-    #gastos por dia da semana
+    # Gráfico: Gastos por Dia da Semana
     dia_map = {
         "Sunday": "domingo",
         "Monday": "segunda-feira",
@@ -68,17 +76,22 @@ if uploaded_file is not None:
     ordem_dias = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"]
     gastos_dia_semana = df_filtrado.groupby("dia_semana")["valor"].sum().reindex(ordem_dias)
 
+    df_dia_semana = pd.DataFrame({
+        "dia_semana": gastos_dia_semana.index,
+        "valor": gastos_dia_semana.values
+    })
+
     fig3 = px.bar(
-        gastos_dia_semana,
-        x=gastos_dia_semana.index,
-        y=gastos_dia_semana.values,
-        labels={'x': 'Dia da Semana', 'y': 'Gasto Total (R$)'},
+        df_dia_semana,
+        x="dia_semana",
+        y="valor",
+        labels={"dia_semana": "Dia da Semana", "valor": "Gasto Total (R$)"},
         title="📅 Gastos por Dia da Semana"
     )
     fig3.update_traces(hovertemplate="R$ %{y:,.2f} no(a) %{x}<extra></extra>")
     st.plotly_chart(fig3, use_container_width=True)
 
-    #tabela limpa
+    # Tabela de Pedidos
     df_filtrado["data_formatada"] = df_filtrado["data_pedido"].dt.strftime("%d/%m/%Y")
     df_ordenado = df_filtrado.sort_values("data_pedido", ascending=False).reset_index(drop=True)
     colunas_para_exibir = ["restaurante", "valor", "data_formatada", "dia_semana"]
@@ -94,4 +107,5 @@ if uploaded_file is not None:
 
 else:
     st.warning("Por favor, envie seu arquivo CSV exportado do iFood para visualizar o dashboard.")
+
 
