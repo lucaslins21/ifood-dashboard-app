@@ -19,7 +19,6 @@ if uploaded_file is not None:
     df["data_pedido"] = pd.to_datetime(df["data_pedido"])
     df["ano"] = df["data_pedido"].dt.year
     df["ano_mes"] = df["data_pedido"].dt.to_period("M").astype(str)
-    df["mes_extenso"] = df["data_pedido"].dt.strftime("%m/%Y")
 
     # Filtro por ano
     anos_disponiveis = sorted(df["ano"].unique(), reverse=True)
@@ -55,14 +54,14 @@ if uploaded_file is not None:
     st.plotly_chart(fig1, use_container_width=True)
 
     # Gastos por Mês
-    gastos_mes = df_filtrado.groupby("mes_extenso")["valor"].sum().reset_index()
+    gastos_mes = df_filtrado.groupby("ano_mes")["valor"].sum().reset_index()
     fig2 = px.line(
         gastos_mes,
-        x="mes_extenso",
+        x="ano_mes",
         y="valor",
         markers=True,
         title="📆 Gastos por Mês",
-        labels={"mes_extenso": "Mês", "valor": "Gasto Total (R$)"}
+        labels={"ano_mes": "Mês", "valor": "Gasto Total (R$)"}
     )
     fig2.update_traces(
         hovertemplate="R$ %{y:,.2f} em %{x}<extra></extra>",
