@@ -45,6 +45,7 @@ if uploaded_file is not None:
         orientation='h',
         labels={"valor": "Valor Total (R$)", "restaurante": "Restaurante"},
         title="🍽️ Top 10 Restaurantes por Gasto"
+        color_discrete_sequence=["#f63366"]
     )
     fig1.update_traces(
         hovertemplate="%{customdata} em %{y}<extra></extra>",
@@ -60,6 +61,7 @@ if uploaded_file is not None:
         y="valor",
         markers=True,
         title="📆 Gastos por Mês"
+        color_discrete_sequence=["#f63366"]
     )
     fig2.update_traces(
         hovertemplate="%{customdata} em %{x}<extra></extra>",
@@ -92,6 +94,7 @@ if uploaded_file is not None:
         y="valor",
         labels={"dia_semana": "Dia da Semana", "valor": "Gasto Total (R$)"},
         title="📅 Gastos por Dia da Semana"
+        color_discrete_sequence=["#f63366"]
     )
     fig3.update_traces(
         hovertemplate="%{customdata} no(a) %{x}<extra></extra>",
