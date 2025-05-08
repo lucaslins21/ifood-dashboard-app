@@ -68,10 +68,25 @@ if uploaded_file is not None:
                   title="📅 Gastos por Dia da Semana")
     st.plotly_chart(fig3, use_container_width=True)
 
-    #tabela de pedidos
+    #formatação de data para padrão brasileiro
+    df_filtrado["data_formatada"] = df_filtrado["data_pedido"].dt.strftime("%d/%m/%Y")
+
+    #colunas a exibir
+    colunas_para_exibir = ["restaurante", "valor", "data_formatada", "dia_semana"]
+    df_tabela = df_filtrado[colunas_para_exibir].sort_values("data_pedido", ascending=False).reset_index(drop=True)
+
+    #renomear colunas para exibição
+    df_tabela = df_tabela.rename(columns={
+        "restaurante": "🍴 Restaurante",
+        "valor": "💰 Valor (R$)",
+        "data_formatada": "📅 Data do Pedido",
+        "dia_semana": "🗓️ Dia da Semana"
+    })
+
+    #exibir a tabela formatada
     st.markdown("### 📋 Tabela de Pedidos")
-    colunas_para_mostrar = [col for col in df_filtrado.columns if col not in ["id_usuario", "data_registro"]]
-    st.dataframe(df_filtrado[colunas_para_mostrar].sort_values("data_pedido", ascending=False).reset_index(drop=True))
+    st.dataframe(df_tabela.style.format({"💰 Valor (R$)": "R${:,.2f}"}), use_container_width=True)
+
 
 else:
     st.warning("Por favor, envie seu arquivo CSV exportado do iFood para visualizar o dashboard.")
