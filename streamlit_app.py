@@ -180,8 +180,7 @@ else:
             </ul>
         </p>
         <p style="margin-top: 1rem; padding: 0.8rem 1rem; border-left: 5px solid #ff4b4b; border-radius: 6px;">
-            <i class="fas fa-thumbtack" style="color: #ff4b4b;"></i>
-            <strong>  Envie apenas o arquivo <code>pedidos.csv</code></strong> no menu à esquerda para gerar suas estatísticas.
+            <p><i class='fa-solid fa-thumbtack'></i> <strong>Envie apenas o arquivo <code>pedidos.csv</code></strong> clicando na <strong>seta <i class='fa-solid fa-chevron-right'></i> no canto superior esquerdo</strong> desta página.</p>
         </p>
     </div>
     """, unsafe_allow_html=True)
