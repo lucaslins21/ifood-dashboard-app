@@ -122,6 +122,17 @@ if uploaded_file:
     fig1.update_layout(yaxis=dict(categoryorder="total ascending"))
     st.plotly_chart(fig1, use_container_width=True)
 
+    #gráfico Gastos por Ano
+    st.markdown("### <i class='fas fa-calendar'></i> Gastos por Ano", unsafe_allow_html=True)
+    ano_gastos = df.groupby("ano")["valor"].sum().reset_index()
+    fig_ano = px.line(ano_gastos, x="ano", y="valor", markers=True,
+                      labels={"ano": "Ano", "valor": "Gasto Total (R$)"})
+    fig_ano.update_traces(line_color="#f63366", marker_color="#f63366",
+                          hovertemplate="R$ %{y:,.2f} em %{x}")
+    fig_ano.update_layout(xaxis=dict(tickmode="linear"))
+    st.plotly_chart(fig_ano, use_container_width=True)
+
+
     #gastos por Mês
     st.markdown("### <i class='fas fa-calendar-alt'></i> Gastos por Mês", unsafe_allow_html=True)
     df["ano_mes"] = df["data_pedido"].dt.to_period("M").astype(str)
