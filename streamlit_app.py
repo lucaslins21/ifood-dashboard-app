@@ -2,119 +2,51 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# Configuração da página
 st.set_page_config(page_title="iFoodStats", layout="wide")
 
-# Estilos e ícones
+# Injeção de CSS leve + Font Awesome para ícones
 st.markdown("""
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         .block-container {
             padding-top: 1rem;
         }
-        .metric-container {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .metric-card {
-            background-color: #1e1e1e;
-            padding: 20px;
-            border-radius: 12px;
-            flex: 1;
-            min-width: 160px;
-            color: white;
-            text-align: center;
-        }
-        .metric-card i {
-            font-size: 22px;
-            margin-bottom: 8px;
-            color: #f63366;
-        }
-        .metric-card h3 {
-            margin: 0;
-            font-size: 15px;
-            color: #ccc;
-        }
-        .metric-card p {
-            margin: 0;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-        }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='color:#f63366'><i class='fa-solid fa-chart-pie'></i> iFoodStats</h1>", unsafe_allow_html=True)
+# Título
+st.markdown("<h1 style='color:#f63366'><i class='fas fa-chart-pie'></i> iFoodStats</h1>", unsafe_allow_html=True)
 
 # Upload
-uploaded_file = st.sidebar.file_uploader("📂 Envie seu arquivo CSV", type=["csv"])
+uploaded_file = st.sidebar.file_uploader("📁 Envie seu arquivo CSV", type=["csv"])
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
     df["data_pedido"] = pd.to_datetime(df["data_pedido"])
-    df["valor"] = pd.to_numeric(df["valor"], errors='coerce')
-    dias_semana_pt = {
-    "Monday": "segunda-feira",
-    "Tuesday": "terça-feira",
-    "Wednesday": "quarta-feira",
-    "Thursday": "quinta-feira",
-    "Friday": "sexta-feira",
-    "Saturday": "sábado",
-    "Sunday": "domingo",
-    }
-    df["dia_semana"] = df["data_pedido"].dt.day_name().map(dias_semana_pt)
+    df["ano"] = df["data_pedido"].dt.year
+    df["ano_mes"] = df["data_pedido"].dt.to_period("M").astype(str)
+    dias = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"]
+    df["dia_semana"] = df["data_pedido"].dt.dayofweek.apply(lambda x: dias[x])
 
+    df = df[df["status"] == "CONCLUDED"]
+    df = df.drop(columns=["id_usuario", "data_registro", "status", "id_pedido"])
+
+    # Filtros
+    st.sidebar.markdown("### <i class='fas fa-filter'></i> Filtros", unsafe_allow_html=True)
+    anos_disponiveis = sorted(df["ano"].unique(), reverse=True)
+    anos_selecionados = st.sidebar.multiselect("Ano(s):", anos_disponiveis, default=anos_disponiveis)
+    df = df[df["ano"].isin(anos_selecionados)]
 
     # Métricas principais
-    total_gasto = df["valor"].sum()
-    num_pedidos = len(df)
-    ticket_medio = total_gasto / num_pedidos if num_pedidos > 0 else 0
     pedido_mais_caro = df.loc[df["valor"].idxmax()]
     pedido_mais_barato = df.loc[df["valor"].idxmin()]
 
-    valor_max = f"R$ {pedido_mais_caro['valor']:.2f}".replace(".", ",")
-    valor_min = f"R$ {pedido_mais_barato['valor']:.2f}".replace(".", ",")
-
-    restaurante_max = pedido_mais_caro['restaurante']
-    restaurante_min = pedido_mais_barato['restaurante']
-
-    # Mostrando as métricas no topo
-    st.markdown("""
-    <div class='metric-container'>
-        <div class='metric-card'>
-            <i class='fa-solid fa-coins'></i>
-            <h3>Total gasto</h3>
-            <p>R$ {:,.2f}</p>
-        </div>
-        <div class='metric-card'>
-            <i class='fa-solid fa-receipt'></i>
-            <h3>Pedidos</h3>
-            <p>{}</p>
-        </div>
-        <div class='metric-card'>
-            <i class='fa-solid fa-ticket'></i>
-            <h3>Ticket médio</h3>
-            <p>R$ {:,.2f}</p>
-        </div>
-        <div class='metric-card'>
-            <i class='fa-solid fa-arrow-up'></i>
-            <h3>Pedido mais caro</h3>
-            <p title="{}">{} em {}</p>
-        </div>
-        <div class='metric-card'>
-            <i class='fa-solid fa-arrow-down'></i>
-            <h3>Pedido mais barato</h3>
-            <p title="{}">{} em {}</p>
-        </div>
-    </div>
-    """.format(
-        total_gasto, num_pedidos, ticket_medio,
-        restaurante_max, valor_max, restaurante_max,
-        restaurante_min, valor_min, restaurante_min
-    ), unsafe_allow_html=True)
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("💰 Total gasto", f"R$ {df['valor'].sum():,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+    col2.metric("📦 Pedidos", len(df))
+    col3.metric("🧾 Ticket médio", f"R$ {df['valor'].mean():,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+    col4.metric("⬆️ Pedido mais caro", f"R$ {pedido_mais_caro['valor']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") + f"\n{pedido_mais_caro['restaurante']}")
+    col5.metric("⬇️ Pedido mais barato", f"R$ {pedido_mais_barato['valor']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") + f"\n{pedido_mais_barato['restaurante']}")
 
     st.markdown("---")
 
@@ -144,7 +76,7 @@ if uploaded_file is not None:
     fig3.update_traces(marker_color=cor, hovertemplate="R$ %{y:,.2f} no(a) %{x}")
     st.plotly_chart(fig3, use_container_width=True)
 
-    # Tabela final
+    # Tabela
     st.markdown("### <i class='fas fa-table'></i> Tabela de Pedidos", unsafe_allow_html=True)
     tabela = df[["restaurante", "valor", "data_pedido", "dia_semana"]].copy()
     tabela["data_pedido"] = tabela["data_pedido"].dt.strftime("%d/%m/%Y")
@@ -154,6 +86,7 @@ if uploaded_file is not None:
 
 else:
     st.info("Por favor, envie um arquivo CSV para começar.")
+
 
 
 
