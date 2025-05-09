@@ -2,7 +2,11 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-st.set_page_config(page_title="iFoodStats", layout="wide")
+st.set_page_config(
+    page_title="iFoodStats",
+    page_icon="img/favicon.png",
+    layout="wide"
+)
 
 def format_currency_br(value):
     return f"R$ {value:,.2f}".replace(",", "v").replace(".", ",").replace("v", ".")
