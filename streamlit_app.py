@@ -72,33 +72,34 @@ if uploaded_file:
 
     st.markdown(f"""
     <div class='metric-container'>
-        <div class='metric-card'>
+        <div class='metric-card' style='align-items: center; display: flex; flex-direction: column;'>
             <i class='fa-solid fa-coins'></i>
-            <h3>Total gasto</h3>
-            <p>{format_currency_br(total_gasto)}</p>
+            <h3 style='text-align: center;'>Total gasto</h3>
+            <p style='text-align: center;'>{format_currency_br(total_gasto)}</p>
         </div>
-        <div class='metric-card'>
+        <div class='metric-card' style='align-items: center; display: flex; flex-direction: column;'>
             <i class='fa-solid fa-receipt'></i>
-            <h3>Pedidos</h3>
-            <p>{num_pedidos}</p>
+            <h3 style='text-align: center;'>Pedidos</h3>
+            <p style='text-align: center;'>{num_pedidos}</p>
         </div>
-        <div class='metric-card'>
+        <div class='metric-card' style='align-items: center; display: flex; flex-direction: column;'>
             <i class='fa-solid fa-ticket'></i>
-            <h3>Ticket médio</h3>
-            <p>{format_currency_br(ticket_medio)}</p>
+            <h3 style='text-align: center;'>Ticket médio</h3>
+            <p style='text-align: center;'>{format_currency_br(ticket_medio)}</p>
         </div>
-        <div class='metric-card'>
+        <div class='metric-card' style='align-items: center; display: flex; flex-direction: column;'>
             <i class='fa-solid fa-arrow-up'></i>
-            <h3>Pedido mais caro</h3>
-            <p>{format_currency_br(pedido_mais_caro['valor'])} em {pedido_mais_caro['restaurante']}</p>
+            <h3 style='text-align: center;'>Pedido mais caro</h3>
+            <p style='text-align: center;'>{format_currency_br(pedido_mais_caro['valor'])} em {pedido_mais_caro['restaurante']}</p>
         </div>
-        <div class='metric-card'>
+        <div class='metric-card' style='align-items: center; display: flex; flex-direction: column;'>
             <i class='fa-solid fa-arrow-down'></i>
-            <h3>Pedido mais barato</h3>
-            <p>{format_currency_br(pedido_mais_barato['valor'])} em {pedido_mais_barato['restaurante']}</p>
+            <h3 style='text-align: center;'>Pedido mais barato</h3>
+            <p style='text-align: center;'>{format_currency_br(pedido_mais_barato['valor'])} em {pedido_mais_barato['restaurante']}</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
+
 
     # Gráfico Top Restaurantes
     st.markdown("### <i class='fas fa-utensils'></i> Top Restaurantes", unsafe_allow_html=True)
