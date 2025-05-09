@@ -7,7 +7,7 @@ st.set_page_config(page_title="iFoodStats", layout="wide")
 def format_currency_br(value):
     return f"R$ {value:,.2f}".replace(",", "v").replace(".", ",").replace("v", ".")
 
-# Estilo
+#estilo
 st.markdown("""
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -105,7 +105,7 @@ if uploaded_file:
     """, unsafe_allow_html=True)
 
 
-    # Gráfico Top Restaurantes
+    #gráfico Top Restaurantes
     st.markdown("### <i class='fas fa-utensils'></i> Top Restaurantes", unsafe_allow_html=True)
     top = df.groupby("restaurante")["valor"].sum().sort_values(ascending=False).head(10).reset_index()
     fig1 = px.bar(top, x="valor", y="restaurante", orientation="h",
@@ -114,7 +114,7 @@ if uploaded_file:
     fig1.update_layout(yaxis=dict(categoryorder="total ascending"))
     st.plotly_chart(fig1, use_container_width=True)
 
-    # Gastos por Mês
+    #gastos por Mês
     st.markdown("### <i class='fas fa-calendar-alt'></i> Gastos por Mês", unsafe_allow_html=True)
     df["ano_mes"] = df["data_pedido"].dt.to_period("M").astype(str)
     mes = df.groupby("ano_mes")["valor"].sum().reset_index()
@@ -124,7 +124,7 @@ if uploaded_file:
                        hovertemplate="R$ %{y:,.2f} em %{x}")
     st.plotly_chart(fig2, use_container_width=True)
 
-    # Gastos por Dia da Semana (com nome manual)
+    #gastos por Dia da Semana (com nome manual)
     st.markdown("### <i class='fas fa-calendar-day'></i> Gastos por Dia da Semana", unsafe_allow_html=True)
     ordem = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"]
     dias_map = {0: "segunda-feira", 1: "terça-feira", 2: "quarta-feira", 3: "quinta-feira", 4: "sexta-feira", 5: "sábado", 6: "domingo"}
@@ -135,7 +135,7 @@ if uploaded_file:
     fig3.update_traces(marker_color="#f63366", hovertemplate="R$ %{y:,.2f} no(a) %{x}")
     st.plotly_chart(fig3, use_container_width=True)
 
-    # Tabela de pedidos
+    #tabela de pedidos
     st.markdown("### <i class='fas fa-table'></i> Tabela de Pedidos", unsafe_allow_html=True)
     df_visual = df[["restaurante", "valor", "data_pedido", "dia_semana"]].copy()
     df_visual.columns = ["🍴 Restaurante", "💰 Valor (R$)", "📅 Data", "📅 Dia da Semana"]
