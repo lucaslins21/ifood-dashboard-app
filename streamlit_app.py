@@ -145,7 +145,7 @@ if uploaded_file:
 
 else:
     st.markdown("""
-        <div style='margin-top: 2rem; padding: 1.5rem; background-color: #0e1117; border-radius: 10px; color: white;'>
+        <div style='margin-top: 2rem; padding: 1.5rem; border-radius: 10px; color: white;'>
             <h2 style='color: #f63366;'><i class='fa-solid fa-circle-info'></i> Como obter o arquivo <code>pedidos.csv</code> do iFood?</h2>
             <p style='font-size: 16px;'>Siga os passos abaixo dentro do aplicativo do iFood:</p>
         </div>
@@ -165,19 +165,19 @@ else:
     st.markdown("""
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-    <div style="margin-top: 1rem; padding: 1.5rem; background-color: #181818; border-radius: 10px; color: #ccc; font-size: 15px; line-height: 1.6;">
+    <div style="margin-top: 1rem; padding: 1.5rem; border-radius: 10px; color: #ccc; font-size: 15px; line-height: 1.6;">
         <p style="margin-bottom: 1rem;">
             <i class="fas fa-hourglass-half" style="color: orange;"></i>
-            <strong> Em até 24 horas</strong>, o iFood enviará um arquivo <code>.zip</code> com seus dados. Ao descompactar, você encontrará três arquivos:
+            <strong>  Em até 24 horas</strong>, o iFood enviará um arquivo <code>.zip</code> com seus dados. Ao descompactar, você encontrará três arquivos:
             <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
                 <li><i class="fas fa-file-csv" style="color: #999;"></i> <code>enderecos.csv</code></li>
                 <li><i class="fas fa-file-csv" style="color: #999;"></i> <code>pedidos.csv</code></li>
                 <li><i class="fas fa-file-csv" style="color: #999;"></i> <code>usuarios.csv</code></li>
             </ul>
         </p>
-        <p style="margin-top: 1rem; background-color: #2a2a2a; padding: 0.8rem 1rem; border-left: 5px solid #ff4b4b; border-radius: 6px;">
+        <p style="margin-top: 1rem; padding: 0.8rem 1rem; border-left: 5px solid #ff4b4b; border-radius: 6px;">
             <i class="fas fa-thumbtack" style="color: #ff4b4b;"></i>
-            <strong> Envie apenas o arquivo <code>pedidos.csv</code></strong> no menu à esquerda para gerar suas estatísticas.
+            <strong>  Envie apenas o arquivo <code>pedidos.csv</code></strong> no menu à esquerda para gerar suas estatísticas.
         </p>
     </div>
     """, unsafe_allow_html=True)
