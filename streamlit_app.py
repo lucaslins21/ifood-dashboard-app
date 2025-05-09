@@ -145,11 +145,15 @@ if uploaded_file:
 
 else:
     st.markdown("""
-        <div style='margin-top: 2rem; padding: 1.5rem; border-radius: 10px; color: #83858c;'>
-            <h2 style='color: #f63366;'><i class='fa-solid fa-circle-info'></i> Como obter o arquivo <code>pedidos.csv</code> do iFood?</h2>
-            <p style='font-size: 16px;'>Siga os passos abaixo dentro do aplicativo do iFood:</p>
-        </div>
-    """, unsafe_allow_html=True)
+    <div style='margin-top: 2rem; padding: 1.5rem; border-radius: 10px; color: #83858c;'>
+        <h2 style='color: #f63366; font-size: 1.7rem; line-height: 2.4rem; word-break: break-word; text-align: center;'>
+            <i class='fa-solid fa-circle-info'></i>
+            Como obter o arquivo <code style="font-size: 1.3rem;">pedidos.csv</code> do iFood?
+        </h2>
+        <p style='font-size: 16px; text-align: center;'>Siga os passos abaixo dentro do aplicativo do iFood:</p>
+    </div>
+""", unsafe_allow_html=True)
+
 
     col1, col2, col3 = st.columns(3)
 
