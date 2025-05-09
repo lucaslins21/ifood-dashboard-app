@@ -153,18 +153,21 @@ else:
 
     col1, col2, col3 = st.columns(3)
 
-    col1.image("img/print 1.png", use_column_width=True, caption="1. Acesse seu perfil")
-    col2.image("img/print 2.png", use_column_width=True, caption="2. Vá em Ajuda")
-    col3.image("img/print 3.png", use_column_width=True, caption="3. Toque em Privacidade e dados")
+    col1.image("img/print 1.png", use_container_width=True, caption="1. Acesse seu perfil")
+    col2.image("img/print 2.png", use_container_width=True, caption="2. Vá em Ajuda")
+    col3.image("img/print 3.png", use_container_width=True, caption="3. Toque em Privacidade e dados")
 
     col4, col5 = st.columns(2)
 
-    col4.image("img/print 4.png", use_column_width=True, caption="4. Selecione 'Quero uma cópia dos meus dados'")
-    col5.image("img/print 5.png", use_column_width=True, caption="5. Clique em 'Solicitar Cópia'")
+    col4.image("img/print 4.png", use_container_width=True, caption="4. Selecione 'Quero uma cópia dos meus dados'")
+    col5.image("img/print 5.png", use_container_width=True, caption="5. Clique em 'Solicitar Cópia'")
 
     st.markdown("""
         <div style='margin-top: 1rem; padding: 1rem; background-color: #0e1117; border-radius: 10px; color: #ccc;'>
-            ⏳ Em até 24 horas, o iFood disponibilizará o arquivo <strong>pedidos.csv</strong> para download. Quando estiver com ele, envie aqui no menu à esquerda.
+            ⏳ Em até 24 horas, o iFood enviará um arquivo **.zip** com seus dados. Ao descompactar, você encontrará três arquivos:  
+            📁 `enderecos.csv`, `pedidos.csv` e `usuarios.csv`.  
+
+            📌 Envie **apenas o arquivo `pedidos.csv`** no menu à esquerda para gerar suas estatísticas.
         </div>
     """, unsafe_allow_html=True)
 
