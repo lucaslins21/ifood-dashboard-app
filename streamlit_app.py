@@ -4,7 +4,7 @@ import plotly.express as px
 
 st.set_page_config(
     page_title="iFoodStats",
-    page_icon="https://github.com/lucaslins21/ifood-dashboard-app/blob/main/img/favicon.png",
+    page_icon="https://github.com/lucaslins21/ifood-dashboard-app/blob/main/img/favicon.png?raw=true",
     layout="wide"
 )
 
