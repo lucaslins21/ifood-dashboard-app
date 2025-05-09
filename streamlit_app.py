@@ -165,7 +165,7 @@ else:
     st.markdown("""
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-    <div style="margin-top: 1rem; padding: 1.5rem; border-radius: 10px; color: #ccc; font-size: 15px; line-height: 1.6;">
+    <div style="margin-top: 1rem; padding: 1.5rem; border-radius: 10px; font-size: 15px; line-height: 1.6;">
         <p style="margin-bottom: 1rem;">
             <i class="fas fa-hourglass-half" style="color: orange;"></i>
             <strong>  Em até 24 horas</strong>, o iFood enviará um arquivo <code>.zip</code> com seus dados. Ao descompactar, você encontrará três arquivos:
