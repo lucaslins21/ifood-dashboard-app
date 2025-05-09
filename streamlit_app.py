@@ -71,10 +71,13 @@ if uploaded_file:
     anos_selecionados = st.sidebar.multiselect("Ano(s):", sorted(anos, reverse=True), default=sorted(anos, reverse=True))
     df = df[df["ano"].isin(anos_selecionados)]
 
+    if not df.empty:
     total_gasto = df["valor"].sum()
     num_pedidos = len(df)
     ticket_medio = total_gasto / num_pedidos if num_pedidos else 0
 
+    pedido_mais_caro = df.loc[df["valor"].idxmax()]
+    ticket_medio = total_gasto / num_pedidos if num_pedidos else 0
     pedido_mais_caro = df.loc[df["valor"].idxmax()]
     pedido_mais_barato = df.loc[df["valor"].idxmin()]
 
