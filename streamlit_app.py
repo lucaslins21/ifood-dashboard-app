@@ -69,50 +69,51 @@ if uploaded_file:
     pedido_mais_caro = df.loc[df["valor"].idxmax()]
     pedido_mais_barato = df.loc[df["valor"].idxmin()]
 
-    # Cards de métricas
-    st.markdown("<div class='card-container'>", unsafe_allow_html=True)
+    # Cards de métricas (atualizado)
+    st.markdown("""
+    <div style='display: flex; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; justify-content: center;'>
 
-    st.markdown(f"""
-        <div class='metric-card'>
-            <div class='icon'><i class='fas fa-coins'></i></div>
-            <h3>Total gasto</h3>
-            <p>{format_currency_br(total_gasto)}</p>
+        <div style='flex:1; min-width: 200px; background-color: #1e1e1e; padding: 1.5rem; border-radius: 0.5rem; text-align: center;'>
+            <div style='font-size: 1.5rem; color: gold;'><i class='fas fa-coins'></i></div>
+            <h4 style='color: #ccc; margin-bottom: 0.5rem;'>Total gasto</h4>
+            <p style='font-size: 1.6rem; font-weight: bold; color: white;'>{}</p>
         </div>
-    """, unsafe_allow_html=True)
 
-    st.markdown(f"""
-        <div class='metric-card'>
-            <div class='icon'><i class='fas fa-receipt'></i></div>
-            <h3>Pedidos</h3>
-            <p>{total_pedidos}</p>
+        <div style='flex:1; min-width: 200px; background-color: #1e1e1e; padding: 1.5rem; border-radius: 0.5rem; text-align: center;'>
+            <div style='font-size: 1.5rem; color: tan;'><i class='fas fa-receipt'></i></div>
+            <h4 style='color: #ccc; margin-bottom: 0.5rem;'>Pedidos</h4>
+            <p style='font-size: 1.6rem; font-weight: bold; color: white;'>{}</p>
         </div>
-    """, unsafe_allow_html=True)
 
-    st.markdown(f"""
-        <div class='metric-card'>
-            <div class='icon'><i class='fas fa-calculator'></i></div>
-            <h3>Ticket médio</h3>
-            <p>{format_currency_br(ticket_medio)}</p>
+        <div style='flex:1; min-width: 200px; background-color: #1e1e1e; padding: 1.5rem; border-radius: 0.5rem; text-align: center;'>
+            <div style='font-size: 1.5rem; color: lightgreen;'><i class='fas fa-calculator'></i></div>
+            <h4 style='color: #ccc; margin-bottom: 0.5rem;'>Ticket médio</h4>
+            <p style='font-size: 1.6rem; font-weight: bold; color: white;'>{}</p>
         </div>
-    """, unsafe_allow_html=True)
 
-    st.markdown(f"""
-        <div class='metric-card'>
-            <div class='icon'><i class='fas fa-arrow-up'></i></div>
-            <h3>Pedido mais caro</h3>
-            <p>{format_currency_br(pedido_mais_caro["valor"])}<br>em {pedido_mais_caro["restaurante"]}</p>
+        <div style='flex:1; min-width: 200px; background-color: #1e1e1e; padding: 1.5rem; border-radius: 0.5rem; text-align: center;'>
+            <div style='font-size: 1.5rem; color: red;'><i class='fas fa-arrow-up'></i></div>
+            <h4 style='color: #ccc; margin-bottom: 0.5rem;'>Pedido mais caro</h4>
+            <p style='font-size: 1.1rem; font-weight: bold; color: white;'>{}<br><small>em {}</small></p>
         </div>
-    """, unsafe_allow_html=True)
 
-    st.markdown(f"""
-        <div class='metric-card'>
-            <div class='icon'><i class='fas fa-arrow-down'></i></div>
-            <h3>Pedido mais barato</h3>
-            <p>{format_currency_br(pedido_mais_barato["valor"])}<br>em {pedido_mais_barato["restaurante"]}</p>
+        <div style='flex:1; min-width: 200px; background-color: #1e1e1e; padding: 1.5rem; border-radius: 0.5rem; text-align: center;'>
+            <div style='font-size: 1.5rem; color: deepskyblue;'><i class='fas fa-arrow-down'></i></div>
+            <h4 style='color: #ccc; margin-bottom: 0.5rem;'>Pedido mais barato</h4>
+            <p style='font-size: 1.1rem; font-weight: bold; color: white;'>{}<br><small>em {}</small></p>
         </div>
-    """, unsafe_allow_html=True)
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    </div>
+    """.format(
+        format_currency_br(total_gasto),
+        total_pedidos,
+        format_currency_br(ticket_medio),
+        format_currency_br(pedido_mais_caro["valor"]),
+        pedido_mais_caro["restaurante"],
+        format_currency_br(pedido_mais_barato["valor"]),
+        pedido_mais_barato["restaurante"]
+    ), unsafe_allow_html=True)
+
 
     # Gráfico - Top Restaurantes por Gasto
     st.markdown("### <i class='fas fa-utensils'></i> Top Restaurantes", unsafe_allow_html=True)
