@@ -53,7 +53,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='color:#f63366'><i class='fa-solid fa-chart-pie'></i> iFoodStats</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='margin-top: 1rem; color:#f63366'><i class='fa-solid fa-chart-pie'></i> iFoodStats</h1>", unsafe_allow_html=True)
 
 uploaded_file = st.sidebar.file_uploader("📂 Envie seu arquivo pedidos.csv", type=["csv"])
 if uploaded_file:
