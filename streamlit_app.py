@@ -7,7 +7,7 @@ st.set_page_config(page_title="iFoodStats", layout="wide")
 def format_currency_br(value):
     return f"R$ {value:,.2f}".replace(",", "v").replace(".", ",").replace("v", ".")
 
-#estiloo
+#estilo
 st.markdown("""
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -180,7 +180,8 @@ else:
             </ul>
         </p>
         <p style="margin-top: 1rem; padding: 0.8rem 1rem; border-left: 5px solid #ff4b4b; border-radius: 6px;">
-            <p><i class='fa-solid fa-thumbtack'></i> <strong>Envie apenas o arquivo <code>pedidos.csv</code></strong> clicando na <strong>seta <i class='fa-solid fa-chevron-right'></i> no canto superior esquerdo</strong> desta página.</p>
+            <i class="fas fa-thumbtack" style="color: #ff4b4b;"></i>
+            <strong>Envie apenas o arquivo <code>pedidos.csv</code></strong> clicando na <strong>seta <i class='fa-solid fa-chevron-right'></i> no canto superior esquerdo</strong> desta página.
         </p>
     </div>
     """, unsafe_allow_html=True)
