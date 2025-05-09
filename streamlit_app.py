@@ -56,7 +56,17 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
     df["data_pedido"] = pd.to_datetime(df["data_pedido"])
     df["valor"] = pd.to_numeric(df["valor"], errors='coerce')
-    df["dia_semana"] = df["data_pedido"].dt.day_name(locale='pt_BR')
+    dias_semana_pt = {
+    "Monday": "segunda-feira",
+    "Tuesday": "terça-feira",
+    "Wednesday": "quarta-feira",
+    "Thursday": "quinta-feira",
+    "Friday": "sexta-feira",
+    "Saturday": "sábado",
+    "Sunday": "domingo",
+    }
+    df["dia_semana"] = df["data_pedido"].dt.day_name().map(dias_semana_pt)
+
 
     # Métricas principais
     total_gasto = df["valor"].sum()
