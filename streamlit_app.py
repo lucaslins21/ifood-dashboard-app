@@ -39,6 +39,8 @@ st.markdown("""
             margin: 0;
             font-size: 15px;
             color: #ccc;
+            width: 100%;
+            text-align: center;
         }
         .metric-card p {
             margin: 0;
