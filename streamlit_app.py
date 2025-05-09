@@ -4,11 +4,10 @@ import plotly.express as px
 
 st.set_page_config(page_title="iFoodStats", layout="wide")
 
-# Função para formatar valores em reais com ponto e vírgula no estilo BR
 def format_currency_br(value):
     return f"R$ {value:,.2f}".replace(",", "v").replace(".", ",").replace("v", ".")
 
-# Estilos e ícones
+# Estilo
 st.markdown("""
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -52,67 +51,56 @@ st.markdown("""
 
 st.markdown("<h1 style='color:#f63366'><i class='fa-solid fa-chart-pie'></i> iFoodStats</h1>", unsafe_allow_html=True)
 
-# Upload
 uploaded_file = st.sidebar.file_uploader("📂 Envie seu arquivo CSV", type=["csv"])
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
     df["data_pedido"] = pd.to_datetime(df["data_pedido"])
     df["valor"] = pd.to_numeric(df["valor"], errors="coerce")
+    df = df[df["status"] == "CONCLUDED"]
 
-    # Filtros
     df["ano"] = df["data_pedido"].dt.year
     anos = df["ano"].unique().tolist()
     anos_selecionados = st.sidebar.multiselect("Ano(s):", sorted(anos, reverse=True), default=sorted(anos, reverse=True))
     df = df[df["ano"].isin(anos_selecionados)]
 
-    # Cálculo das métricas
     total_gasto = df["valor"].sum()
     num_pedidos = len(df)
     ticket_medio = total_gasto / num_pedidos if num_pedidos else 0
 
-    valor_max = df["valor"].max()
-    restaurante_max = df.loc[df["valor"].idxmax(), "restaurante"]
+    pedido_mais_caro = df.loc[df["valor"].idxmax()]
+    pedido_mais_barato = df.loc[df["valor"].idxmin()]
 
-    valor_min = df["valor"].min()
-    restaurante_min = df.loc[df["valor"].idxmin(), "restaurante"]
-
-
-    # Métricas
-    st.markdown("""
+    st.markdown(f"""
     <div class='metric-container'>
         <div class='metric-card'>
             <i class='fa-solid fa-coins'></i>
             <h3>Total gasto</h3>
-            <p>R$ {:,.2f}</p>
+            <p>{format_currency_br(total_gasto)}</p>
         </div>
         <div class='metric-card'>
             <i class='fa-solid fa-receipt'></i>
             <h3>Pedidos</h3>
-            <p>{}</p>
+            <p>{num_pedidos}</p>
         </div>
         <div class='metric-card'>
             <i class='fa-solid fa-ticket'></i>
             <h3>Ticket médio</h3>
-            <p>R$ {:,.2f}</p>
+            <p>{format_currency_br(ticket_medio)}</p>
         </div>
         <div class='metric-card'>
             <i class='fa-solid fa-arrow-up'></i>
             <h3>Pedido mais caro</h3>
-            <p title="{}">{} em {}</p>
+            <p>{format_currency_br(pedido_mais_caro['valor'])} em {pedido_mais_caro['restaurante']}</p>
         </div>
         <div class='metric-card'>
             <i class='fa-solid fa-arrow-down'></i>
             <h3>Pedido mais barato</h3>
-            <p title="{}">{} em {}</p>
+            <p>{format_currency_br(pedido_mais_barato['valor'])} em {pedido_mais_barato['restaurante']}</p>
         </div>
     </div>
-    """.format(
-        total_gasto, num_pedidos, ticket_medio,
-        restaurante_max, valor_max, restaurante_max,
-        restaurante_min, valor_min, restaurante_min
-    ), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-    # Gráfico - Top Restaurantes por Gasto
+    # Gráfico Top Restaurantes
     st.markdown("### <i class='fas fa-utensils'></i> Top Restaurantes", unsafe_allow_html=True)
     top = df.groupby("restaurante")["valor"].sum().sort_values(ascending=False).head(10).reset_index()
     fig1 = px.bar(top, x="valor", y="restaurante", orientation="h",
@@ -121,7 +109,7 @@ if uploaded_file:
     fig1.update_layout(yaxis=dict(categoryorder="total ascending"))
     st.plotly_chart(fig1, use_container_width=True)
 
-    # Gráfico - Gastos por Mês
+    # Gastos por Mês
     st.markdown("### <i class='fas fa-calendar-alt'></i> Gastos por Mês", unsafe_allow_html=True)
     df["ano_mes"] = df["data_pedido"].dt.to_period("M").astype(str)
     mes = df.groupby("ano_mes")["valor"].sum().reset_index()
@@ -131,10 +119,11 @@ if uploaded_file:
                        hovertemplate="R$ %{y:,.2f} em %{x}")
     st.plotly_chart(fig2, use_container_width=True)
 
-    # Gráfico - Gastos por Dia da Semana
+    # Gastos por Dia da Semana (com nome manual)
     st.markdown("### <i class='fas fa-calendar-day'></i> Gastos por Dia da Semana", unsafe_allow_html=True)
     ordem = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"]
-    df["dia_semana"] = df["data_pedido"].dt.day_name(locale='pt_BR').str.lower()
+    dias_map = {0: "segunda-feira", 1: "terça-feira", 2: "quarta-feira", 3: "quinta-feira", 4: "sexta-feira", 5: "sábado", 6: "domingo"}
+    df["dia_semana"] = df["data_pedido"].dt.dayofweek.map(dias_map)
     df["dia_semana"] = pd.Categorical(df["dia_semana"], categories=ordem, ordered=True)
     dia = df.groupby("dia_semana")["valor"].sum().reset_index()
     fig3 = px.bar(dia, x="dia_semana", y="valor", labels={"valor": "Gasto Total (R$)", "dia_semana": "Dia da Semana"})
@@ -151,6 +140,7 @@ if uploaded_file:
 
 else:
     st.info("Por favor, envie um arquivo CSV para começar.")
+
 
 
 
