@@ -163,13 +163,25 @@ else:
     col5.image("img/print 5.png", use_container_width=True, caption="5. Clique em 'Solicitar Cópia'")
 
     st.markdown("""
-        <div style='margin-top: 1rem; padding: 1rem; background-color: #0e1117; border-radius: 10px; color: #ccc;'>
-            ⏳ Em até 24 horas, o iFood enviará um arquivo **.zip** com seus dados. Ao descompactar, você encontrará três arquivos:  
-            📁 `enderecos.csv`, `pedidos.csv` e `usuarios.csv`.  
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-            📌 Envie **apenas o arquivo `pedidos.csv`** no menu à esquerda para gerar suas estatísticas.
-        </div>
+    <div style="margin-top: 1rem; padding: 1.5rem; background-color: #181818; border-radius: 10px; color: #ccc; font-size: 15px; line-height: 1.6;">
+        <p style="margin-bottom: 1rem;">
+            <i class="fas fa-hourglass-half" style="color: orange;"></i>
+            <strong> Em até 24 horas</strong>, o iFood enviará um arquivo <code>.zip</code> com seus dados. Ao descompactar, você encontrará três arquivos:
+            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li><i class="fas fa-file-csv" style="color: #999;"></i> <code>enderecos.csv</code></li>
+                <li><i class="fas fa-file-csv" style="color: #999;"></i> <code>pedidos.csv</code></li>
+                <li><i class="fas fa-file-csv" style="color: #999;"></i> <code>usuarios.csv</code></li>
+            </ul>
+        </p>
+        <p style="margin-top: 1rem; background-color: #2a2a2a; padding: 0.8rem 1rem; border-left: 5px solid #ff4b4b; border-radius: 6px;">
+            <i class="fas fa-thumbtack" style="color: #ff4b4b;"></i>
+            <strong> Envie apenas o arquivo <code>pedidos.csv</code></strong> no menu à esquerda para gerar suas estatísticas.
+        </p>
+    </div>
     """, unsafe_allow_html=True)
+
 
 
 
