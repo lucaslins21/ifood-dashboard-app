@@ -65,6 +65,18 @@ if uploaded_file:
     anos_selecionados = st.sidebar.multiselect("Ano(s):", sorted(anos, reverse=True), default=sorted(anos, reverse=True))
     df = df[df["ano"].isin(anos_selecionados)]
 
+    # Cálculo das métricas
+    total_gasto = df["valor"].sum()
+    num_pedidos = len(df)
+    ticket_medio = total_gasto / num_pedidos if num_pedidos else 0
+
+    valor_max = df["valor"].max()
+    restaurante_max = df.loc[df["valor"].idxmax(), "restaurante"]
+
+    valor_min = df["valor"].min()
+    restaurante_min = df.loc[df["valor"].idxmin(), "restaurante"]
+
+
     # Métricas
     st.markdown("""
     <div class='metric-container'>
