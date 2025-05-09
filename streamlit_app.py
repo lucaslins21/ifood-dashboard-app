@@ -7,7 +7,7 @@ st.set_page_config(page_title="iFoodStats", layout="wide")
 def format_currency_br(value):
     return f"R$ {value:,.2f}".replace(",", "v").replace(".", ",").replace("v", ".")
 
-#estilo
+#estiloo
 st.markdown("""
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
