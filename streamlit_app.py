@@ -41,6 +41,8 @@ st.markdown("""
             color: #ccc;
             width: 100%;
             text-align: center;
+            display: flex;
+            justify-content: center;
         }
         .metric-card p {
             margin: 0;
