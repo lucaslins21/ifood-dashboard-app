@@ -8,45 +8,49 @@ st.set_page_config(page_title="iFoodStats", layout="wide")
 def format_currency_br(value):
     return f"R$ {value:,.2f}".replace(",", "v").replace(".", ",").replace("v", ".")
 
-# Font Awesome e CSS leve
+# Estilos e ícones
 st.markdown("""
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        .block-container { padding-top: 1rem; }
-        .card-container {
+        .block-container {
+            padding-top: 1rem;
+        }
+        .metric-container {
             display: flex;
+            justify-content: space-between;
             flex-wrap: wrap;
-            gap: 1rem;
-            margin: 1rem 0 2rem 0;
+            gap: 20px;
+            margin-bottom: 30px;
         }
         .metric-card {
             background-color: #1e1e1e;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
+            padding: 20px;
+            border-radius: 12px;
             flex: 1;
-            min-width: 200px;
+            min-width: 160px;
+            color: white;
             text-align: center;
         }
+        .metric-card i {
+            font-size: 22px;
+            margin-bottom: 8px;
+            color: #f63366;
+        }
         .metric-card h3 {
+            margin: 0;
+            font-size: 15px;
             color: #ccc;
-            margin-bottom: 0.5rem;
         }
         .metric-card p {
-            font-size: 1.6rem;
+            margin: 0;
+            font-size: 24px;
             font-weight: bold;
             color: white;
-            margin: 0;
-        }
-        .metric-card .icon {
-            font-size: 1.4rem;
-            color: #f63366;
-            margin-bottom: 0.3rem;
         }
     </style>
 """, unsafe_allow_html=True)
 
-# Título principal
-st.markdown("<h1 style='color:#f63366'><i class='fas fa-utensils'></i> iFoodStats</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='color:#f63366'><i class='fa-solid fa-chart-pie'></i> iFoodStats</h1>", unsafe_allow_html=True)
 
 # Upload
 uploaded_file = st.sidebar.file_uploader("📂 Envie seu arquivo CSV", type=["csv"])
@@ -62,58 +66,39 @@ if uploaded_file:
     df = df[df["ano"].isin(anos_selecionados)]
 
     # Métricas
-    total_gasto = df["valor"].sum()
-    total_pedidos = len(df)
-    ticket_medio = total_gasto / total_pedidos if total_pedidos > 0 else 0
-
-    pedido_mais_caro = df.loc[df["valor"].idxmax()]
-    pedido_mais_barato = df.loc[df["valor"].idxmin()]
-
-    # Cards de métricas (atualizado)
     st.markdown("""
-    <div style='display: flex; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; justify-content: center;'>
-
-        <div style='flex:1; min-width: 200px; background-color: #1e1e1e; padding: 1.5rem; border-radius: 0.5rem; text-align: center;'>
-            <div style='font-size: 1.5rem; color: gold;'><i class='fas fa-coins'></i></div>
-            <h4 style='color: #ccc; margin-bottom: 0.5rem;'>Total gasto</h4>
-            <p style='font-size: 1.6rem; font-weight: bold; color: white;'>{}</p>
+    <div class='metric-container'>
+        <div class='metric-card'>
+            <i class='fa-solid fa-coins'></i>
+            <h3>Total gasto</h3>
+            <p>R$ {:,.2f}</p>
         </div>
-
-        <div style='flex:1; min-width: 200px; background-color: #1e1e1e; padding: 1.5rem; border-radius: 0.5rem; text-align: center;'>
-            <div style='font-size: 1.5rem; color: tan;'><i class='fas fa-receipt'></i></div>
-            <h4 style='color: #ccc; margin-bottom: 0.5rem;'>Pedidos</h4>
-            <p style='font-size: 1.6rem; font-weight: bold; color: white;'>{}</p>
+        <div class='metric-card'>
+            <i class='fa-solid fa-receipt'></i>
+            <h3>Pedidos</h3>
+            <p>{}</p>
         </div>
-
-        <div style='flex:1; min-width: 200px; background-color: #1e1e1e; padding: 1.5rem; border-radius: 0.5rem; text-align: center;'>
-            <div style='font-size: 1.5rem; color: lightgreen;'><i class='fas fa-calculator'></i></div>
-            <h4 style='color: #ccc; margin-bottom: 0.5rem;'>Ticket médio</h4>
-            <p style='font-size: 1.6rem; font-weight: bold; color: white;'>{}</p>
+        <div class='metric-card'>
+            <i class='fa-solid fa-ticket'></i>
+            <h3>Ticket médio</h3>
+            <p>R$ {:,.2f}</p>
         </div>
-
-        <div style='flex:1; min-width: 200px; background-color: #1e1e1e; padding: 1.5rem; border-radius: 0.5rem; text-align: center;'>
-            <div style='font-size: 1.5rem; color: red;'><i class='fas fa-arrow-up'></i></div>
-            <h4 style='color: #ccc; margin-bottom: 0.5rem;'>Pedido mais caro</h4>
-            <p style='font-size: 1.1rem; font-weight: bold; color: white;'>{}<br><small>em {}</small></p>
+        <div class='metric-card'>
+            <i class='fa-solid fa-arrow-up'></i>
+            <h3>Pedido mais caro</h3>
+            <p title="{}">{} em {}</p>
         </div>
-
-        <div style='flex:1; min-width: 200px; background-color: #1e1e1e; padding: 1.5rem; border-radius: 0.5rem; text-align: center;'>
-            <div style='font-size: 1.5rem; color: deepskyblue;'><i class='fas fa-arrow-down'></i></div>
-            <h4 style='color: #ccc; margin-bottom: 0.5rem;'>Pedido mais barato</h4>
-            <p style='font-size: 1.1rem; font-weight: bold; color: white;'>{}<br><small>em {}</small></p>
+        <div class='metric-card'>
+            <i class='fa-solid fa-arrow-down'></i>
+            <h3>Pedido mais barato</h3>
+            <p title="{}">{} em {}</p>
         </div>
-
     </div>
     """.format(
-        format_currency_br(total_gasto),
-        total_pedidos,
-        format_currency_br(ticket_medio),
-        format_currency_br(pedido_mais_caro["valor"]),
-        pedido_mais_caro["restaurante"],
-        format_currency_br(pedido_mais_barato["valor"]),
-        pedido_mais_barato["restaurante"]
+        total_gasto, num_pedidos, ticket_medio,
+        restaurante_max, valor_max, restaurante_max,
+        restaurante_min, valor_min, restaurante_min
     ), unsafe_allow_html=True)
-
 
     # Gráfico - Top Restaurantes por Gasto
     st.markdown("### <i class='fas fa-utensils'></i> Top Restaurantes", unsafe_allow_html=True)
